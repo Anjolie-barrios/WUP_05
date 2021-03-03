@@ -1,23 +1,47 @@
 ---
-title: "Aides Drug"
-author: "Put your name here!"
-date: "put the date here"
+title: "AIDS Drug"
+author: "Anjolie"
+date: "3/1/2021"
 output: html_document
 ---
 
 ```{r include=FALSE,echo=FALSE}
 require(tidyverse)
 require(tigerstats)
+```
+
+```{r echo= FALSE}
 triUmp <-read.csv(file="triUmpsal.csv",header=TRUE)
+triUmp$treatment <- as.factor(triUmp$treatment)
+triUmp$infected <- as.factor(triUmp$infected)
+triUmp$LGBTQ <- as.factor(triUmp$LGBTQ)
+triUmp$DrugUser <- as.factor(triUmp$DrugUser)
+triUmp$gender <- as.factor(triUmp$gender)
+triUmp <- triUmp %>%
+  filter(gender == "F") 
+
+#for all cases
+triUmp_count <- matrix(c(210,147,5484,5927),ncol=2,byrow=TRUE)
+colnames(triUmp_count) <- c("Vaccine","Placebo")
+rownames(triUmp_count) <- c("AIDS","None")
+triUmp_count <- as.table(triUmp_count)
+#for no drugs
+TriUmp_noDrugs_count <- matrix(c(210,133,5386,5627),ncol=2,byrow=TRUE)
+colnames(TriUmp_noDrugs_count) <- c("Vaccine","Placebo")
+rownames(TriUmp_noDrugs_count) <- c("AIDS","None")
+TriUmp_noDrugs_count <- as.table(TriUmp_noDrugs_count)
 ```
 
 # Introduction
 
 <!--In this section you explain what you are trying to show.  Where did the data come from?  What is the research or other question you are trying to answer?.  If you skimp in this section expect to be marked down in your grade. Paint a picture of the project a couple of paragraphs is expected!-->
 
-A new  preventative aides drug (triUmpsal) is under test in clinical trials. Consider only the females, does this drug seem effective?  Hint - use dplyr to obtain that subpopulation with the filter command.
+A new  preventative AIDS drug (triUmpsal) is under test in clinical trials. Considering only the females, does this drug seem effective?  Hint - use dplyr to obtain that subpopulation with the filter command.  
+$H_0$: On average, the drug will NOT be more effective (on females) than the placebo.  
+$H_A$: On average, the drug will be more effective (on females) than the placebo.  
 
 # Methods
+After filtering for only females, a contingency table will be made comparing the treatment ("drug" vs "placebo") with infection ("aids" vs "none"). We will also be comparing infection with whether the case was a drug user (for recreational/ unrelated medical use, because it's a different variable than "treatment") or not. A chi- squared test (and other inferential tests) will also be used. 
 
 <!--Decide on your methods:  use "variable analysis" or other appropriate descriptors.  Make sure to choose at least one graphical method and at least one numerical method. Discuss what data manipulations may be needed for example subsetting or other binning procedures and what sort of graphical displays and inferential tools will be used!-->
 
@@ -28,11 +52,22 @@ A new  preventative aides drug (triUmpsal) is under test in clinical trials. Con
 ## Descriptive Results
 
 ### Graphical Descriptive Results
+```{r}
+#main
+barchartGC(~infected + treatment, data = triUmp)
+barchartGC(~infected + treatment, data = triUmp, type = "percent")
+```
+]]add comments
 
+```{r}
+#unrelated drugs vs infection
+barchartGC(~DrugUser + infected, data = triUmp)
+barchartGC(~DrugUser + infected, data = triUmp, type = "percent")
+```
 <!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question. Bottom line is to explain the features of the graph that are relevant to conforming or departing to what is expected by your null hypothesis !-->
 
 ### Numerical Descriptive Results
-
+]]look at Novavax
 <!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
 
 ## Inferential Results
